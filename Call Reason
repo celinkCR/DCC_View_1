@@ -1,0 +1,26 @@
+select MCR.call_id
+	, MCR.user_dept_name, MCR.user_first_name
+	, MCR.user_middle_name, MCR.user_last_name, MCR.loan_number as Loan_Number_MCR, MCR.user_postal_code
+	, MCR.user_phone, MCR.user_email, MCR.created_date_time, MCR.modified_date_time
+	, MCR.created_by, MCR.modified_by, MCR.call_status, MCR.call_disposition_description
+	, MCR.call_notes_detail, MCR.priority_notes_acknowledgement_ind, MCR.user_id as user_id_MCR, MCR.user_role_name
+	, case 
+		when DN.call_id is not null then 'Death Notice'
+		when F.call_id is not null then 'Foreclosure'
+		when H.call_id is not null then 'HOA'
+		when I.call_id is not null then 'Insurance'
+		when LM.call_id is not null then 'Loss Mitigation'
+		when O.call_id is not null then 'Occupancy'
+		when PAY.call_id is not null then 'Payment'
+		when PO.call_id is not null then 'Pay Off'
+	end as call_reason
+
+from lake.dcc_report_mastercallrecord as MCR
+	left outer join lake.dcc_report_death_notification as DN 	on DN.call_id = MCR.call_id
+	left outer join lake.dcc_report_foreclosure as F 			on F.call_id = MCR.call_id
+	left outer join lake.dcc_report_hoa as H 					on H.call_id = MCR.call_id
+	left outer join lake.dcc_report_insurance as I 				on I.call_id = MCR.call_id
+	left outer join lake.dcc_report_loss_mitigation as LM 		on LM.call_id = MCR.call_id
+	left outer join lake.dcc_report_occupancy as O 				on O.call_id = MCR.call_id
+	left outer join lake.dcc_report_payment as PAY 				on PAY.call_id = MCR.call_id
+	left outer join lake.dcc_report_pay_off as PO 				on PO.call_id = MCR.call_id
